@@ -1,0 +1,45 @@
+networks:
+  dev:
+services:
+  app:
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      depends_on:
+        db:
+          condition: service_healthy
+      command:  >
+        bash -c "
+          python manage.py makemigrations app;
+          python manage.py migrate;
+          python -m gunicorn --bind 0.0.0.0:8000 project.wsgi;
+        "
+      volumes:
+        - .:/src
+      ports:
+        - "8000:8000"
+      restart: on-failure
+      env_file:
+        - .env   
+      networks:
+        - dev
+                
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+        - .env
+    ports:
+      - "5433:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+        - dev
+
+volumes:
+  postgres_data:

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Items List</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                <h2>{{ item.id }} - {{ item.name }}</h2>
+                <p>{{ item.description }}</p>
+                <p>Price: {{ item.price }} {{ item.currency }}</p>
+                <a href="{% url 'item_detail' item.id %}">View Details</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

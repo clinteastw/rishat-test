@@ -1,0 +1,37 @@
+<html>
+    <a href="{% url 'home' %}">Back to Home</a>
+  <head>
+    <title>Buy Order № {{ order.id }}</title>
+    <h1>Total price {{ order.total_price | floatformat:2}}</h1>
+  </head>
+  <body>
+    <h1>Order {{ order.id }} details</h1>
+    <ul>
+        {% for item in order.items.all %}
+            <li>
+                <h2>{{ item.name }}</h2>
+                <p>{{ item.description }}</p>
+                <p>Price: {{ item.price }} {{ item.currency }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <button id="buy-button">Buy</button>
+    <br><br>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script type="text/javascript">
+      let key = '{{ STRIPE_PUBLIC_KEY }}'
+      var stripe = Stripe(key);
+      var buyButton = document.getElementById('buy-button');
+      buyButton.addEventListener('click', function() {
+        fetch('/buy_order/{{ order.id }}/', { method: 'GET' })
+          .then(response => response.json())
+          .then(session => {
+            stripe.redirectToCheckout({ sessionId: session.session_id });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    </script>
+  </body>
+</html>
