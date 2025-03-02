@@ -12,6 +12,14 @@
 #     }
 # }
 ```
+### Comment settings for deployment
+```python
+DATABASES = {
+    'default': dj_database_url.config(
+        default=database_url
+    )
+}
+```
 - ## Run with Docker
 
 ```python
@@ -49,3 +57,22 @@ Create superuser
 python manage.py createsuperuser
 ```
 Go to <http://localhost:8000>
+
+### Endpoins:
+```
+localhost:8000 - Home page with items list
+```
+```
+localhost:8000/item/{id} - Item details
+```
+```
+localhost:8000/buy/{id} - Buy Item
+```
+```
+localhost:8000/order/{id} - Order details
+```
+```
+localhost:8000/buy_order/{id} - Buy Order
+```
+
+
